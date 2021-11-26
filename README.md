@@ -16,7 +16,7 @@ pizza =
 ,2055831 55
 2055833, "dishName": "Goat cheese and arugula", "dishPrice": 55}]
 drink - 2055841 - spritr - 12, 2055844 water 10
-desserts':2055831
+desserts':2055836, 2055835 both 29
 @app.route("/order", methods=['POST'])
 def post_order():
 if request.method == 'POST':
