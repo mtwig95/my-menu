@@ -1,87 +1,102 @@
 import requests
-from flask import Flask, json
-from flask import request
-
+from flask import Flask, json, request
 
 app = Flask(__name__)
-menu = requests.get(
-    'https://www.10bis.co.il/NextApi/GetRestaurantMenu?culture=en&uiCulture=en&restaurantId=19156&deliveryMethod=pickup')
-menu = json.loads(menu.text)
-menu = menu['Data']
-categories = menu['categoriesList']
+
+
+def daily_update():
+    menu = requests.get(
+        'https://www.10bis.co.il/NextApi/GetRestaurantMenu?culture=en&uiCulture=en&restaurantId=19156&deliveryMethod=pickup')
+    menu = json.loads(menu.text)
+    menu = menu['Data']
+    return menu['categoriesList']
+
+
+@app.route("/drinks", methods=['GET'])
+def get_drinks():
+    return show_as_json(get_category('Drinks'))
+
+
+@app.route("/pizzas", methods=['GET'])
+def get_pizzas():
+    return show_as_json(get_category('Pizzas'))
+
+
+@app.route("/desserts", methods=['GET'])
+def get_desserts():
+    return show_as_json(get_category('Desserts'))
+
+
+@app.route("/drinks/<id>", methods=['GET'])
+def get_drink_id(id):
+    return get_item('Drinks', id)
+
+
+@app.route("/pizzas/<id>", methods=['GET'])
+def get_pizza_id(id):
+    return get_item('Pizzas', id)
+
+
+@app.route("/desserts/<id>", methods=['GET'])
+def get_dessert_id(id):
+    return get_item('Desserts', id)
+
+
+@app.route("/order", methods=['POST'])
+def post_order():
+    if request.method == 'POST':
+        # print(request)
+        body = request.json
+        # print(body)
+        total_payment = 0
+        print("here->")
+        print(body.keys())
+        for category, items in body.items():
+            for id in items:
+                print(category.title(), id)
+                print(get_category(category.title()))
+                print(get_price_by_id(id))
+            print("*" * 12)
+            total_payment += get_price_by_id(get_category(category.title()), id)
+        return "Total psyment is {}".format(total_payment)
 
 
 def show_as_json(input):
     return json.dumps(input)
 
 
-@app.route("/drinks", methods=['GET'])
-def get_drinks():
-    drinks = get_category('Drinks')
-    return json.dumps(format_items(drinks))
-
-
-@app.route("/drinks/<id>", methods=['GET'])
-def get_drink_id(id):
-    drinks = format_items(get_category('Drinks'))
-    for drink in drinks:
-        if drink['dishId'] == int(id):
-            return json.dumps(drink)
-    return "No such drink"
-
-
-@app.route("/pizzas", methods=['GET'])
-def get_pizzas():
-    pizzas = get_category('Pizzas')
-    return json.dumps(format_items(pizzas))
-
-
-@app.route("/pizzas/<id>", methods=['GET'])
-def get_pizza_id(id):
-    pizzas = format_items(get_category('Pizzas'))
-    for pizza in pizzas:
-        if pizza['dishId'] == int(id):
-            return json.dumps(pizza)
-    return "No such pizza"
-
-
-@app.route("/desserts", methods=['GET'])
-def get_desserts():
-    desserts = get_category('Desserts')
-    return json.dumps(format_items(desserts))
-
-
-@app.route("/desserts/<id>", methods=['GET'])
-def get_dessert_id(id):
-    desserts = format_items(get_category('Desserts'))
-    for dessert in desserts:
-        if dessert['dishId'] == int(id):
-            return json.dumps(dessert)
-    return "No such dessert"
+def get_item(category, id):
+    category = get_category(category)
+    for item in category:
+        if item['dishId'] == int(id):
+            return show_as_json(item)
+    return "<h1>No such item</h1>"
 
 
 def get_category(input_category):
     for category in categories:
         if category['categoryName'] == input_category:
-            return category['dishList']
+            return format_items(category['dishList'])
 
 
 def format_items(items):
     formatted_items = []
     for item in items:
-        formated_item = {}
-        formated_item['dishId'] = item['dishId']
-        formated_item['dishName'] = item['dishName']
-        formated_item['dishDescription'] = item['dishDescription']
-        formated_item['dishPrice'] = item['dishPrice']
-        formatted_items.append(formated_item)
+        formatted_item = {'dishId': item['dishId'], 'dishName': item['dishName'],
+                          'dishDescription': item['dishDescription'], 'dishPrice': item['dishPrice']}
+        formatted_items.append(formatted_item)
     return formatted_items
 
 
-@app.route("/order/", methods=['GET', 'POST'])
-def post_order():
-    if request.method == 'POST':
-        data = request.form.get(get_drinks()) # a multidict containing POST data
-        json.dumps(get_drinks())
+def get_price_by_id(category, id):
+    for item in category['dishList']:
+        if item['dishId'] == int(id):
+            # print(item)
+            return item['dishPrice']
 
-    return "ho"
+
+categories = daily_update()
+item = get_item('Drinks', 2055841)
+id = 2055841
+# print(get_price_by_id(id))
+x = 1
