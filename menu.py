@@ -1,5 +1,5 @@
 import requests
-from flask import Flask, json
+from flask import Flask, json, request
 
 app = Flask(__name__)
 
@@ -43,33 +43,17 @@ def get_dessert_id(id):
 
 
 @app.route("/order", methods=['POST'])
-# def post_order(body):
-#     # if request.method == 'POST':
-#         # print(request)
-#         # body = request.json
-#         # print(body)
-#         total_payment = 0
-#         print("here->")
-#         print(body.keys())
-#         for category in body.keys():
-#             category = get_category(category.title())
-#             print("category={}".format(category))
-#             for item in body.values():
-#                 for smaellitem in item:
-#                     print(smaellitem)
-#                     print(get_price_by_id(category, id))
-#                     print("*" * 12)
-#                     total_payment += get_price_by_id(get_category(category.title()), id)
-#         return "Total psyment is {}".format(total_payment)
-
-def post_order(body):
-    total_payment = 0
-    for category in body.keys():
-        category_items = get_category(category.title())
-        for item in body.get(category, "no ite"):
-            item_price = get_price_by_id(category_items, item)
-            total_payment += item_price
-    return "Total payment is {}".format(total_payment)
+def post_order():
+    if request.method == 'POST':
+        body = request.json
+        total_payment = 0
+        for category in body.keys():
+            category_items = get_category(category.title())
+            for id in body.get(category, "No item"):
+                item_price = get_price_by_id(category_items, id)
+                total_payment += item_price
+        print("*"*20)
+        return "Total payment is {}".format(total_payment)
 
 
 def show_as_json(input):
@@ -106,9 +90,9 @@ def get_price_by_id(category, id):
 
 
 categories = daily_update()
-body = {'drinks': [2055841, 2055844], 'desserts': [2055835, 2055836], 'pizzas': [2055830, 2055831]}
-print(body)
-print(post_order(body))
+# body = {'drinks': [2055841, 2055844], 'desserts': [2055835, 2055836], 'pizzas': [2055830, 2055831]}
+# print(body)
+# print(post_order(body))
 # categories = daily_update()
 # item = get_item('Drinks', 2055841)
 # id = 2055841
