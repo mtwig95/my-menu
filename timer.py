@@ -18,13 +18,11 @@ def daily_update():
 
 
 def save_menu_to_file(sc):
-    print(f'MAYTAL TIME {time.asctime()}')
-
+    print(f'Last update: {time.asctime()}')
     menu = daily_update()
     menu_file = open("menu.json", "w")
     json.dump(menu, menu_file)
     menu_file.close()
-    s.enter(10, 1, save_menu_to_file, (sc,))
 
 
 if __name__ == "__main__":
