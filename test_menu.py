@@ -33,7 +33,6 @@ def test_get_drinks():
 def test_get_pizzas():
     print('\ntesting test_get_pizzas()')
     response = requests.get(url + '/pizzas')
-    print(response.content)
     return response
 
 
