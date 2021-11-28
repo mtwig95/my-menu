@@ -61,7 +61,7 @@ def test_status_code(response):
         print(f'{sep}test completed successfully{sep}')
 
 
-run_test_with_example = True
+run_test_with_example = False
 
 response = test_get_drinks()
 test_status_code(response)
