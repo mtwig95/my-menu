@@ -29,13 +29,14 @@ The server implements the following API:
 
 ```
 pip install Flask
+pip install requests
 ```
 
 ### Executing program
 
 <h4>Run each command in a separate terminal</h4>
 ```
-python3 timer.py
+python timer.py
 ```
 To run the application export the FLASK_APP environment variable:
 For Bash
@@ -50,5 +51,5 @@ flask run
 ```
 Running on http://127.0.0.1:5000/
 ```
-python3 test_menu.py
+python test_menu.py
 ```
