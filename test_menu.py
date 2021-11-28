@@ -1,3 +1,6 @@
+"""
+Test all GET and POST operations, can show (or not) by changing the var run_test_with_example
+"""
 import requests
 
 url = "http://127.0.0.1:5000"

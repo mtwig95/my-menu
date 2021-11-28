@@ -1,15 +1,24 @@
-import requests
+"""
+All p
+"""
 from flask import Flask, json, request
 
 app = Flask(__name__)
 
 
-def daily_update():
-    menu = requests.get(
-        'https://www.10bis.co.il/NextApi/GetRestaurantMenu?culture=en&uiCulture=en&restaurantId=19156&deliveryMethod=pickup')
-    menu = json.loads(menu.text)
-    menu = menu['Data']
-    return menu['categoriesList']
+def get_menu():
+    menu_file = open("menu.json", "r")
+    output = json.loads(menu_file.read())
+    menu_file.close()
+    return output
+
+
+@app.route("/")
+def index():
+    return """
+    <h1>Planck's Tech Assignment</h1>
+    <h2>Web server in Python that exposes an API for a menu in a specific restaurant</h2>
+    """
 
 
 @app.route("/drinks", methods=['GET'])
@@ -52,7 +61,6 @@ def post_order():
             for id in body.get(category, "No item"):
                 item_price = get_price_by_id(category_items, id)
                 total_payment += item_price
-        print("*"*20)
         return "Total payment is {}".format(total_payment)
 
 
@@ -89,12 +97,4 @@ def get_price_by_id(category, id):
             return item['dishPrice']
 
 
-categories = daily_update()
-# body = {'drinks': [2055841, 2055844], 'desserts': [2055835, 2055836], 'pizzas': [2055830, 2055831]}
-# print(body)
-# print(post_order(body))
-# categories = daily_update()
-# item = get_item('Drinks', 2055841)
-# id = 2055841
-# # print(get_price_by_id(id))
-# x = 1
+categories = get_menu()

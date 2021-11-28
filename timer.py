@@ -3,7 +3,9 @@ import json
 import requests
 import schedule
 
-
+"""
+This file load the data from 10bis Arcaffe to json file every day.
+"""
 def daily_update():
     menu = requests.get(
         'https://www.10bis.co.il/NextApi/GetRestaurantMenu?culture=en&uiCulture=en&restaurantId=19156&deliveryMethod'
