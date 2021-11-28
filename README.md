@@ -41,7 +41,7 @@ run timer.py
 To run the application export the FLASK_APP environment variable:
 (for powershell)
 ```
-env:FLASK_APP = "menu"
+ $env:FLASK_APP = "menu"
 flask run
 ```
 Running on http://127.0.0.1:5000/
