@@ -1,11 +1,10 @@
-"""
-All p
-"""
 from flask import Flask, json, request
 
 app = Flask(__name__)
 
-
+"""
+this function return the data from the file
+"""
 def get_menu():
     menu_file = open("menu.json", "r")
     output = json.loads(menu_file.read())
@@ -54,7 +53,7 @@ def get_dessert_id(id):
 @app.route("/order", methods=['POST'])
 def post_order():
     if request.method == 'POST':
-        body = request.json
+        body = request.json #to get the body
         total_payment = 0
         for category in body.keys():
             category_items = get_category(category.title())
@@ -77,7 +76,7 @@ def get_item(category, id):
 
 
 def get_category(input_category):
-    for category in categories:
+    for category in menu_categories:
         if category['categoryName'] == input_category:
             return format_items(category['dishList'])
 
@@ -97,4 +96,7 @@ def get_price_by_id(category, id):
             return item['dishPrice']
 
 
-categories = get_menu()
+"""
+the var getting all the categories from the menu
+"""
+menu_categories = get_menu()
