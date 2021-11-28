@@ -34,7 +34,8 @@ pip install requests
 
 ### Executing program
 
-<h4>Run each command in a separate terminal</h4>
+* Run each command in a separate terminal
+  
 ```
 python timer.py
 ```
